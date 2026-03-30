@@ -41,7 +41,38 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="min-h-screen flex flex-col">
+            <div className="flex-1">{children}</div>
+            <footer className="border-t border-border bg-muted/40 py-5 px-6 mt-auto">
+              <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <span>© {new Date().getFullYear()}</span>
+                  <a
+                    href="https://justestif.github.io/portfolio/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-foreground hover:text-primary transition-colors"
+                  >
+                    Estifanos Beyene
+                  </a>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span>Next.js</span>
+                  <span aria-hidden>·</span>
+                  <span>Supabase</span>
+                  <span aria-hidden>·</span>
+                  <span>Tailwind CSS</span>
+                  <span aria-hidden>·</span>
+                  <a
+                    href="/design"
+                    className="hover:text-primary transition-colors"
+                  >
+                    Design System
+                  </a>
+                </div>
+              </div>
+            </footer>
+          </div>
         </ThemeProvider>
       </body>
     </html>

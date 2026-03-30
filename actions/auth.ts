@@ -28,7 +28,7 @@ export async function signUp(
       },
     });
     if (error) return err(error.message);
-    return ok(undefined);
+    redirect("/dashboard");
   } catch (e) {
     return err(toErrorMessage(e));
   }

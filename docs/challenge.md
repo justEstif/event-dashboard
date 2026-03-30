@@ -1,5 +1,7 @@
 # Fastbreak Event Dashboard
 
+> **TODO (before submitting):** Rewrite `README.md` in your own voice — cover thought process, architecture decisions, and trade-offs. The challenge explicitly says not to use AI for this.
+
 **Challenge Description:** Build a full-stack Sports Event Management application where users can create, view, and manage sports events with venue information.
 
 ## Technical Requirements
