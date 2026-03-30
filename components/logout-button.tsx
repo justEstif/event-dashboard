@@ -13,6 +13,7 @@ export function LogoutButton() {
       size="sm"
       disabled={isPending}
       onClick={() => startTransition(() => signOut())}
+      className="text-white/70 hover:text-white hover:bg-white/10"
     >
       {isPending ? "Signing out..." : "Sign out"}
     </Button>

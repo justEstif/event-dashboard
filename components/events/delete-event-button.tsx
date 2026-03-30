@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { Trash2Icon, Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
 
@@ -25,21 +24,16 @@ interface DeleteEventButtonProps {
 }
 
 export function DeleteEventButton({ eventId, eventName }: DeleteEventButtonProps) {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
     startTransition(async () => {
       const result = await deleteEvent(eventId);
-      if (!result.success) {
+      // deleteEvent redirects on success — only reaches here on error
+      if (result && !result.success) {
         toast.error(result.error);
-        return;
       }
-      toast.success("Event deleted");
-      setOpen(false);
-      router.push("/dashboard");
-      router.refresh();
     });
   }
 

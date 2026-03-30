@@ -1,8 +1,9 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAuthUser } from "@/lib/auth";
-import { ok, err } from "@/lib/result";
+import { err } from "@/lib/result";
 
 export async function deleteEvent(id: string) {
   if (!id) return err("Event ID is required");
@@ -18,5 +19,5 @@ export async function deleteEvent(id: string) {
 
   if (error) return err(error.message);
 
-  return ok(undefined);
+  redirect("/dashboard");
 }

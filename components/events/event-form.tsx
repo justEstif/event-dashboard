@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { unstable_rethrow } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -91,6 +92,7 @@ export function EventForm({ event }: EventFormProps) {
       router.push("/dashboard");
       router.refresh();
     } catch (e) {
+      unstable_rethrow(e);
       toast.error("Something went wrong. Please try again.");
       console.error(e);
     }
