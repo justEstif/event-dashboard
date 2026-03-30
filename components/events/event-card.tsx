@@ -21,7 +21,7 @@ export function EventCard({ event }: { event: EventSummary }) {
       <Card className="h-full transition-shadow group-hover:shadow-md">
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-semibold leading-snug group-hover:underline line-clamp-2">
+            <h3 className="font-bold leading-snug group-hover:underline line-clamp-2" style={{ fontFamily: "var(--font-barlow-condensed)", fontSize: "1.05rem", letterSpacing: "-0.01em" }}>
               {event.name}
             </h3>
             <SportBadge sport={event.sport_type} />

@@ -13,6 +13,102 @@ interface PageProps {
   searchParams: Promise<{ search?: string; sport?: string; page?: string }>;
 }
 
+function EmptyState({ input }: { input: GetEventsInput }) {
+  const isFiltered = !!(input.search || input.sport);
+
+  if (isFiltered) {
+    return (
+      <div className="relative flex flex-col items-center justify-center gap-5 py-28 text-center overflow-hidden">
+        {/* Faint decorative background numeral */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none select-none absolute inset-0 flex items-center justify-center text-[18rem] font-black leading-none text-foreground/[0.03]"
+          style={{ fontFamily: 'var(--font-barlow-condensed)' }}
+        >
+          0
+        </span>
+
+        <div className="relative z-10 flex flex-col items-center gap-5">
+          <div>
+            <h2
+              className="text-5xl font-black uppercase tracking-tight text-foreground"
+              style={{ fontFamily: 'var(--font-barlow-condensed)' }}
+            >
+              No results found
+            </h2>
+            <p className="mt-2 text-muted-foreground text-base">
+              Nothing matched{' '}
+              {input.search && (
+                <span>
+                  &ldquo;<span className="font-medium text-foreground">{input.search}</span>&rdquo;
+                </span>
+              )}
+              {input.search && input.sport && ' in '}
+              {input.sport && (
+                <span className="font-medium text-foreground capitalize">{input.sport}</span>
+              )}
+              . Try a different search or filter.
+            </p>
+          </div>
+
+          <Button variant="outline" asChild className="cursor-pointer">
+            <Link href="/dashboard">Clear filters</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative flex flex-col items-center justify-center gap-6 py-28 text-center overflow-hidden">
+      {/* Faint decorative stadium emoji */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute inset-0 flex items-center justify-center text-[14rem] leading-none opacity-[0.05]"
+      >
+        🏟️
+      </span>
+
+      <div className="relative z-10 flex flex-col items-center gap-6">
+        {/* Accent stripe */}
+        <div className="flex items-center gap-3">
+          <div className="h-px w-12 bg-primary" />
+          <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+            Fastbreak
+          </span>
+          <div className="h-px w-12 bg-primary" />
+        </div>
+
+        <div>
+          <h2
+            className="text-6xl font-black uppercase tracking-tight text-foreground leading-none"
+            style={{ fontFamily: 'var(--font-barlow-condensed)' }}
+          >
+            The pitch
+            <br />
+            <span className="text-primary">is empty</span>
+          </h2>
+          <p className="mt-3 text-muted-foreground text-base max-w-xs mx-auto">
+            No events on the schedule yet. Create your first one and get the season started.
+          </p>
+        </div>
+
+        <Button
+          asChild
+          size="lg"
+          className="cursor-pointer px-8 font-semibold uppercase tracking-wide"
+          style={{ fontFamily: 'var(--font-barlow-condensed)' }}
+        >
+          <Link href="/events/new">
+            <CalendarPlusIcon className="h-5 w-5 mr-2" />
+            Schedule first event
+          </Link>
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 async function EventGrid({ input }: { input: GetEventsInput }) {
   const result = await getEvents(input);
 
@@ -27,22 +123,7 @@ async function EventGrid({ input }: { input: GetEventsInput }) {
   const { events, page, totalPages } = result.data;
 
   if (events.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-        <div className="rounded-full bg-muted p-4">
-          <CalendarPlusIcon className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <div>
-          <p className="font-medium">No events yet</p>
-          <p className="text-sm text-muted-foreground mt-1">
-            Create your first event to get started.
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/events/new">Create event</Link>
-        </Button>
-      </div>
-    );
+    return <EmptyState input={input} />;
   }
 
   return (
@@ -71,7 +152,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     <div className="flex flex-col gap-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Events</h1>
+        <h1
+          className="text-3xl font-black uppercase tracking-tight leading-none"
+          style={{ fontFamily: 'var(--font-barlow-condensed)' }}
+        >
+          Events
+        </h1>
         <Button asChild>
           <Link href="/events/new">
             <CalendarPlusIcon className="h-4 w-4 mr-2" />

@@ -10,11 +10,32 @@ export default function ProtectedLayout({
 }) {
   return (
     <div className="min-h-screen flex flex-col">
-      <nav className="w-full border-b border-border h-14">
+      <nav
+        className="w-full h-14 border-b"
+        style={{
+          background: "var(--nav-bg)",
+          borderColor: "var(--nav-border)",
+        }}
+      >
         <div className="max-w-5xl mx-auto h-full flex items-center justify-between px-5">
-          <Link href="/dashboard" className="font-semibold text-sm">
-            Fastbreak
+          {/* Brand mark — red stripe + name */}
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2.5 group"
+          >
+            <span
+              className="h-5 w-[3px] rounded-full transition-transform group-hover:scale-y-110"
+              style={{ background: "var(--primary)" }}
+              aria-hidden
+            />
+            <span
+              className="text-white font-bold tracking-widest uppercase text-sm"
+              style={{ fontFamily: "var(--font-barlow-condensed)", fontSize: "1rem", letterSpacing: "0.12em" }}
+            >
+              Fastbreak
+            </span>
           </Link>
+
           <div className="flex items-center gap-2">
             <ThemeSwitcher />
             <Suspense>

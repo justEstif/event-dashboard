@@ -2,22 +2,22 @@ import { Badge } from "@/components/ui/badge";
 import { type SportType } from "@/lib/schemas/event";
 import { cn } from "@/lib/utils";
 
-const SPORT_COLORS: Record<SportType, string> = {
-  Soccer: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  Basketball: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400",
-  Tennis: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
-  Baseball: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
-  Volleyball: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-  Rugby: "bg-stone-100 text-stone-800 dark:bg-stone-900/30 dark:text-stone-400",
-  Hockey: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400",
-  "American Football": "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
+export const SPORT_COLORS: Record<SportType, string> = {
+  Soccer: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
+  Basketball: "bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300",
+  Tennis: "bg-lime-100 text-lime-800 dark:bg-lime-950 dark:text-lime-300",
+  Baseball: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
+  Volleyball: "bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300",
+  Rugby: "bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300",
+  Hockey: "bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-300",
+  "American Football": "bg-violet-100 text-violet-800 dark:bg-violet-950 dark:text-violet-300",
 };
 
 export function SportBadge({ sport }: { sport: SportType }) {
   return (
     <Badge
       variant="secondary"
-      className={cn("font-medium", SPORT_COLORS[sport])}
+      className={cn("font-medium shrink-0", SPORT_COLORS[sport])}
     >
       {sport}
     </Badge>
