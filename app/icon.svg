@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <!-- Ball body: off-centre radial so glass "bends" the red -->
+    <radialGradient id="body" cx="36%" cy="30%" r="76%">
+      <stop offset="0%"   stop-color="#ff6060"/>
+      <stop offset="30%"  stop-color="#d91c1c"/>
+      <stop offset="70%"  stop-color="#a50e0e"/>
+      <stop offset="100%" stop-color="#5c0505"/>
+    </radialGradient>
+
+    <!-- Large soft highlight blob -->
+    <radialGradient id="hiBlob" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.78"/>
+      <stop offset="50%"  stop-color="#ffffff" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Rim light bottom-right -->
+    <radialGradient id="rim" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Glass edge inner ring -->
+    <radialGradient id="edge" cx="50%" cy="50%" r="50%">
+      <stop offset="72%"  stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.18"/>
+    </radialGradient>
+
+    <!-- Soft blur helpers -->
+    <filter id="softBlur">
+      <feGaussianBlur stdDeviation="2.5"/>
+    </filter>
+    <filter id="microBlur">
+      <feGaussianBlur stdDeviation="0.5"/>
+    </filter>
+
+    <clipPath id="ball">
+      <circle cx="50" cy="50" r="45"/>
+    </clipPath>
+  </defs>
+
+  <!-- Main ball body -->
+  <circle cx="50" cy="50" r="45" fill="url(#body)"/>
+
+  <!-- Soccer seam lines — classic truncated icosahedron, clipped to sphere -->
+  <g clip-path="url(#ball)" fill="none"
+     stroke="rgba(0,0,0,0.30)" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round"
+     filter="url(#microBlur)">
+    <!-- Central pentagon -->
+    <polygon points="50,27 63,37 58,52 42,52 37,37"/>
+    <!-- Outward spokes from each vertex -->
+    <line x1="50"  y1="27"  x2="43"  y2="8"/>
+    <line x1="50"  y1="27"  x2="57"  y2="8"/>
+    <line x1="63"  y1="37"  x2="79"  y2="30"/>
+    <line x1="63"  y1="37"  x2="77"  y2="52"/>
+    <line x1="58"  y1="52"  x2="66"  y2="69"/>
+    <line x1="42"  y1="52"  x2="34"  y2="69"/>
+    <line x1="37"  y1="37"  x2="23"  y2="52"/>
+    <line x1="37"  y1="37"  x2="21"  y2="30"/>
+    <!-- Arc connectors between spokes (suggest hexagonal panels) -->
+    <path d="M43,8  Q33,5  26,13"/>
+    <path d="M57,8  Q67,5  74,13"/>
+    <path d="M79,30 Q87,40 77,52"/>
+    <path d="M66,69 Q68,81 56,86"/>
+    <path d="M34,69 Q32,81 44,86"/>
+    <path d="M23,52 Q13,40 21,30"/>
+  </g>
+
+  <!-- Frosted glass tint overlay -->
+  <circle cx="50" cy="50" r="45"
+          fill="rgba(255,80,80,0.06)"/>
+
+  <!-- Large diffuse highlight (upper-left) -->
+  <ellipse cx="33" cy="27" rx="21" ry="15"
+           fill="url(#hiBlob)" filter="url(#softBlur)"/>
+
+  <!-- Main specular highlight -->
+  <ellipse cx="29" cy="22" rx="10" ry="6"
+           fill="white" opacity="0.85"
+           transform="rotate(-20 29 22)"/>
+
+  <!-- Pinpoint specular (bright centre of reflection) -->
+  <ellipse cx="26" cy="19" rx="4" ry="2.4"
+           fill="white" opacity="0.97"
+           transform="rotate(-20 26 19)"/>
+
+  <!-- Rim / secondary light bottom-right -->
+  <ellipse cx="66" cy="67" rx="15" ry="9"
+           fill="url(#rim)" transform="rotate(32 66 67)"/>
+
+  <!-- Glass edge thickness ring -->
+  <circle cx="50" cy="50" r="45" fill="url(#edge)"/>
+
+  <!-- Subtle bottom shadow for 3-D depth -->
+  <ellipse cx="50" cy="80" rx="26" ry="8"
+           fill="rgba(0,0,0,0.20)" filter="url(#softBlur)"/>
+</svg>
