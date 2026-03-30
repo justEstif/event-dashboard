@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { CalendarPlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { EventCard, EventCardSkeleton } from "@/components/events/event-card";
+import { EventCardSkeleton } from "@/components/events/event-card";
+import { EventList } from "@/components/events/event-list";
 import { DashboardFilters } from "@/components/events/dashboard-filters";
 import { Pagination } from "@/components/events/pagination";
 import { getEvents } from "@/actions/events/getEvents";
@@ -128,11 +129,7 @@ async function EventGrid({ input }: { input: GetEventsInput }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {events.map((event) => (
-          <EventCard key={event.id} event={event} />
-        ))}
-      </div>
+      <EventList events={events} />
       <Pagination page={page} totalPages={totalPages} />
     </div>
   );

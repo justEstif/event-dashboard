@@ -17,30 +17,45 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { deleteEvent } from "@/actions/events/deleteEvent";
+import { deleteEventSilent } from "@/actions/events/deleteEventSilent";
 
 interface DeleteEventButtonProps {
   eventId: string;
   eventName: string;
+  /** If provided, called optimistically before deletion; no redirect occurs */
+  onDelete?: (id: string) => void;
 }
 
-export function DeleteEventButton({ eventId, eventName }: DeleteEventButtonProps) {
+export function DeleteEventButton({ eventId, eventName, onDelete }: DeleteEventButtonProps) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
-    startTransition(async () => {
-      const result = await deleteEvent(eventId);
-      // deleteEvent redirects on success — only reaches here on error
-      if (result && !result.success) {
-        toast.error(result.error);
-      }
-    });
+    if (onDelete) {
+      // Optimistic path — caller manages UI; we silently delete without redirect
+      setOpen(false);
+      onDelete(eventId);
+      startTransition(async () => {
+        const result = await deleteEventSilent(eventId);
+        if (!result.success) {
+          toast.error(result.error);
+        }
+      });
+    } else {
+      startTransition(async () => {
+        const result = await deleteEvent(eventId);
+        // deleteEvent redirects on success — only reaches here on error
+        if (result && !result.success) {
+          toast.error(result.error);
+        }
+      });
+    }
   }
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive shrink-0 mt-7">
+        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive shrink-0">
           <Trash2Icon className="h-4 w-4" />
           <span className="sr-only">Delete event</span>
         </Button>

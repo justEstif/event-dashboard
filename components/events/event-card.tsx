@@ -18,7 +18,7 @@ function formatDate(iso: string) {
 
 export function EventCard({ event }: { event: EventSummary }) {
   return (
-    <Link href={`/events/${event.id}/edit`} className="group block">
+    <Link href={`/events/${event.id}`} className="group block">
       <Card className="h-full transition-shadow group-hover:shadow-md">
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">

@@ -61,7 +61,7 @@ export default function RootLayout({
                   <span aria-hidden>·</span>
                   <span>Supabase</span>
                   <span aria-hidden>·</span>
-                  <span>Tailwind CSS</span>
+                  <span>Tailwind</span>
                   <span aria-hidden>·</span>
                   <a
                     href="/design"
