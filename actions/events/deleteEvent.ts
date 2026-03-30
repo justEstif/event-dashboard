@@ -1,12 +1,13 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { withAuth } from "@/lib/auth";
+import { requireAuthUser } from "@/lib/auth";
 import { ok, err } from "@/lib/result";
 
-export const deleteEvent = withAuth(async (user, id: string) => {
+export async function deleteEvent(id: string) {
   if (!id) return err("Event ID is required");
 
+  const user = await requireAuthUser();
   const supabase = await createClient();
 
   const { error } = await supabase
@@ -18,4 +19,4 @@ export const deleteEvent = withAuth(async (user, id: string) => {
   if (error) return err(error.message);
 
   return ok(undefined);
-});
+}

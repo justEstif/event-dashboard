@@ -1,13 +1,14 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { withAuth } from "@/lib/auth";
+import { requireAuthUser } from "@/lib/auth";
 import { ok, err } from "@/lib/result";
 import { type EventWithVenues } from "@/lib/schemas/event";
 
-export const getEventById = withAuth(async (user, id: string) => {
+export async function getEventById(id: string) {
   if (!id) return err("Event ID is required");
 
+  const user = await requireAuthUser();
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -23,4 +24,4 @@ export const getEventById = withAuth(async (user, id: string) => {
   }
 
   return ok(data as EventWithVenues);
-});
+}

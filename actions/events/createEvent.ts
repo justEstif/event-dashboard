@@ -1,11 +1,14 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { withAuth } from "@/lib/auth";
+import { requireAuthUser } from "@/lib/auth";
 import { ok, err, toErrorMessage } from "@/lib/result";
 import { eventSchema, type EventInput, type EventWithVenues } from "@/lib/schemas/event";
 
-export const createEvent = withAuth(async (user, input: EventInput) => {
+export async function createEvent(input: EventInput) {
+  const user = await requireAuthUser();
+
   const parsed = eventSchema.safeParse(input);
   if (!parsed.success) return err(parsed.error.issues[0].message);
 
@@ -13,7 +16,6 @@ export const createEvent = withAuth(async (user, input: EventInput) => {
   const supabase = await createClient();
 
   try {
-    // Insert event
     const { data: event, error: eventError } = await supabase
       .from("events")
       .insert({ ...eventData, user_id: user.id })
@@ -22,7 +24,6 @@ export const createEvent = withAuth(async (user, input: EventInput) => {
 
     if (eventError) return err(eventError.message);
 
-    // Insert venues
     const { data: insertedVenues, error: venueError } = await supabase
       .from("venues")
       .insert(venues.map((v) => ({ ...v, event_id: event.id })))
@@ -34,4 +35,4 @@ export const createEvent = withAuth(async (user, input: EventInput) => {
   } catch (e) {
     return err(toErrorMessage(e));
   }
-});
+}

@@ -77,18 +77,23 @@ export function EventForm({ event }: EventFormProps) {
   });
 
   async function onSubmit(data: EventInput) {
-    const result = isEditing
-      ? await updateEvent(event!.id, data)
-      : await createEvent(data);
+    try {
+      const result = isEditing
+        ? await updateEvent(event!.id, data)
+        : await createEvent(data);
 
-    if (!result.success) {
-      toast.error(result.error);
-      return;
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+
+      toast.success(isEditing ? "Event updated!" : "Event created!");
+      router.push("/dashboard");
+      router.refresh();
+    } catch (e) {
+      toast.error("Something went wrong. Please try again.");
+      console.error(e);
     }
-
-    toast.success(isEditing ? "Event updated!" : "Event created!");
-    router.push("/dashboard");
-    router.refresh();
   }
 
   const isSubmitting = form.formState.isSubmitting;
