@@ -1,0 +1,2 @@
+[tools]
+"npm:agent-browser" = "latest" # browser automation cli
