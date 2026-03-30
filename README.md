@@ -1,109 +1,142 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# Fastbreak
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+A sports event dashboard built with Next.js 15, Supabase, and Google OAuth.
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+Create and manage your sporting events — search, filter by sport, and keep track of venues across Soccer, Basketball, Tennis, Baseball, Volleyball, Rugby, Hockey, and American Football.
 
-## Features
+---
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Proxy
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+## Try it out
 
-## Demo
+A demo account is pre-seeded with 15 events across all sport types (past, present, and future):
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+| | |
+|---|---|
+| **Email** | `demo@fastbreak.app` |
+| **Password** | `fastbreak2026!` |
 
-## Deploy to Vercel
+---
 
-Vercel deployment will guide you through creating a Supabase account and project.
+## Tech stack
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 15 App Router (React Server Components) |
+| Database | Supabase (Postgres + Row Level Security) |
+| Auth | Supabase Auth — email/password + Google OAuth |
+| Styling | Tailwind CSS v4 + shadcn/ui |
+| Forms | react-hook-form + Zod |
+| Tests | Vitest |
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+---
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+## Local development
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+### 1. Clone and install
 
-## Clone and run locally
+```bash
+git clone https://github.com/justEstif/event-dashboard
+cd event-dashboard
+npm install
+```
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+### 2. Create a Supabase project
 
-2. Create a Next.js app using the Supabase Starter template npx command
+1. Go to [supabase.com](https://supabase.com) and create a new project.
+2. Copy your project URL and anon key from **Settings → API**.
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
+### 3. Configure environment variables
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+
+# Required only for the seed script
+SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
+```
+
+> The service role key is in **Supabase dashboard → Settings → API → service_role**.
+
+### 4. Push the database schema
+
+```bash
+npm run db:push
+```
+
+### 5. Seed demo data (optional)
+
+```bash
+npm run seed
+```
+
+This creates `demo@fastbreak.app` (email-confirmed) and inserts 15 sample events. Safe to re-run.
+
+### 6. Run the development server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Google OAuth (optional)
+
+To enable **Continue with Google**:
+
+1. Create OAuth credentials in [Google Cloud Console](https://console.cloud.google.com/).
+2. Add your Supabase callback URL as an authorized redirect URI:
    ```
-
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
+   https://<project-ref>.supabase.co/auth/v1/callback
    ```
+3. In the Supabase dashboard → **Authentication → Providers → Google**, paste the client ID and secret.
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+See [docs/SETUP.md](docs/SETUP.md) for the full step-by-step guide.
 
-3. Use `cd` to change into the app's directory
+---
 
-   ```bash
-   cd with-supabase-app
-   ```
+## Available scripts
 
-4. Rename `.env.example` to `.env.local` and update the following:
+```bash
+npm run dev        # Start development server
+npm run build      # Production build
+npm run test       # Run unit tests (Vitest)
+npm run seed       # Seed demo user + 15 events
+npm run db:push    # Push Supabase migrations
+npm run db:reset   # Reset local Supabase DB
+```
 
-  ```env
-  NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
-  ```
-  > [!NOTE]
-  > This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
-  > Both legacy **anon** keys and new **publishable** keys can be used with this variable name during the transition period. Supabase's dashboard may show `NEXT_PUBLIC_SUPABASE_ANON_KEY`; its value can be used in this example.
-  > See the [full announcement](https://github.com/orgs/supabase/discussions/29260) for more information.
+---
 
-  Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+## Project structure
 
-5. You can now run the Next.js local development server:
-
-   ```bash
-   npm run dev
-   ```
-
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
-
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
-
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
-
-## Feedback and issues
-
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
-
-## More Supabase examples
-
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+```
+app/
+  (protected)/        # Route group — shared nav layout
+    dashboard/        # Event list with search + filter
+    events/
+      new/            # Create event form
+      [id]/edit/      # Edit + delete event form
+  auth/               # Login, sign-up, callback
+actions/
+  auth.ts             # signIn, signUp, signOut
+  events/             # getEvents, getEventById, createEvent, updateEvent, deleteEvent
+components/
+  events/             # EventCard, EventForm, SportBadge, DashboardFilters, Pagination, DeleteEventButton
+  ui/                 # shadcn/ui components
+lib/
+  result.ts           # ActionResult<T> discriminated union
+  auth.ts             # withAuth() guard, requireAuthUser()
+  schemas/event.ts    # Zod schemas + shared types
+supabase/
+  migrations/         # DB schema + RLS policies
+scripts/
+  seed.ts             # Demo user + event seed script
+```
