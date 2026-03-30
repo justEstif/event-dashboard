@@ -40,6 +40,7 @@ export function LoginForm({
   const [serverError, setServerError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [isGooglePending, setIsGooglePending] = useState(false);
+  const [isDemoPending, setIsDemoPending] = useState(false);
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -53,6 +54,17 @@ export function LoginForm({
       // signIn redirects on success — only reaches here on error
       if (!result.success) setServerError(result.error);
     });
+  }
+
+  async function handleDemoSignIn() {
+    setServerError(null);
+    setIsDemoPending(true);
+    const result = await signIn("demo@fastbreak.app", "fastbreak2026!");
+    if (!result.success) {
+      setServerError(result.error);
+      setIsDemoPending(false);
+    }
+    // on success, signIn redirects — no need to reset
   }
 
   async function handleGoogleSignIn() {
@@ -77,12 +89,23 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
+          {/* Demo shortcut */}
+          <Button
+            variant="secondary"
+            className="w-full font-medium"
+            onClick={handleDemoSignIn}
+            disabled={isDemoPending || isPending || isGooglePending}
+            type="button"
+          >
+            {isDemoPending ? "Signing in…" : "Sign in as demo user"}
+          </Button>
+
           {/* Google OAuth */}
           <Button
             variant="outline"
             className="w-full"
             onClick={handleGoogleSignIn}
-            disabled={isGooglePending || isPending}
+            disabled={isGooglePending || isPending || isDemoPending}
             type="button"
           >
             {isGooglePending ? (
