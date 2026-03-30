@@ -44,7 +44,7 @@ function Swatch({ token, label }: { token: string; label: string }) {
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className="h-14 w-14 rounded-md border border-border shadow-sm"
+        className="h-14 w-14 rounded-md border border-border shadow-xs"
         style={{ background: `var(--${token})` }}
       />
       <span className="text-xs text-muted-foreground text-center leading-tight">

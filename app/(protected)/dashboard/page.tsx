@@ -22,7 +22,7 @@ function EmptyState({ input }: { input: GetEventsInput }) {
         {/* Faint decorative background numeral */}
         <span
           aria-hidden="true"
-          className="pointer-events-none select-none absolute inset-0 flex items-center justify-center text-[18rem] font-black leading-none text-foreground/[0.03]"
+          className="pointer-events-none select-none absolute inset-0 flex items-center justify-center text-[18rem] font-black leading-none text-foreground/3"
           style={{ fontFamily: 'var(--font-barlow-condensed)' }}
         >
           0
