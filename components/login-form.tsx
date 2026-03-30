@@ -59,12 +59,12 @@ export function LoginForm({
   async function handleDemoSignIn() {
     setServerError(null);
     setIsDemoPending(true);
-    const result = await signIn("demo@fastbreak.app", "fastbreak2026!");
-    if (!result.success) {
-      setServerError(result.error);
+    try {
+      const result = await signIn("demo@fastbreak.app", "fastbreak2026!");
+      if (!result.success) setServerError(result.error);
+    } finally {
       setIsDemoPending(false);
     }
-    // on success, signIn redirects — no need to reset
   }
 
   async function handleGoogleSignIn() {
