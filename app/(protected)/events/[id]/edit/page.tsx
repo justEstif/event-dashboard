@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeftIcon } from "lucide-react";
+import { ViewTransition } from "react";
 import { EventForm } from "@/components/events/event-form";
 import { DeleteEventButton } from "@/components/events/delete-event-button";
 import { getEventById } from "@/actions/events/getEventById";
@@ -34,9 +35,11 @@ export default async function EditEventPage({ params }: PageProps) {
             <ChevronLeftIcon className="h-3.5 w-3.5" />
             Dashboard
           </Link>
-          <h1 className="mt-2 font-heading text-3xl uppercase tracking-wide line-clamp-1">
-            {event.name}
-          </h1>
+          <ViewTransition name={`event-title-${event.id}`}>
+            <h1 className="mt-2 font-heading text-3xl uppercase tracking-wide line-clamp-1">
+              {event.name}
+            </h1>
+          </ViewTransition>
         </div>
         <DeleteEventButton eventId={id} eventName={event.name} />
       </div>

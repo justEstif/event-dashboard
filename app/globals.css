@@ -148,6 +148,53 @@
   }
 }
 
+/* ─── View Transition Animations ─────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Page-level fade + subtle slide */
+  ::view-transition-old(root) {
+    animation: vt-fade-out 180ms ease-out both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-fade-in 220ms ease-out both;
+  }
+
+  /* Shared event-title: cross-fade with gentle scale */
+  ::view-transition-old(event-title) {
+    animation: vt-title-out 200ms ease-in both;
+  }
+  ::view-transition-new(event-title) {
+    animation: vt-title-in 260ms ease-out both;
+  }
+}
+
+/* Honour reduced-motion: instant swap */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(event-title),
+  ::view-transition-new(event-title) {
+    animation: none;
+  }
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes vt-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes vt-title-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.94); }
+}
+@keyframes vt-title-in {
+  from { opacity: 0; transform: scale(1.06); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
 @layer base {
   * {
     @apply border-border;

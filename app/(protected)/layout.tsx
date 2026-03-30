@@ -1,7 +1,7 @@
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, ViewTransition } from "react";
 
 export default function ProtectedLayout({
   children,
@@ -44,9 +44,11 @@ export default function ProtectedLayout({
           </div>
         </div>
       </nav>
-      <main className="flex-1 max-w-5xl w-full mx-auto px-5 py-8">
-        {children}
-      </main>
+      <ViewTransition>
+        <main className="flex-1 max-w-5xl w-full mx-auto px-5 py-8">
+          {children}
+        </main>
+      </ViewTransition>
     </div>
   );
 }
