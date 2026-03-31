@@ -10,25 +10,27 @@ import {
   type EventSummary,
   type SportType,
 } from "@/lib/schemas/event";
+import { withAction } from "@/lib/withAction";
 
 const PAGE_SIZE = 20;
 
-export async function getEvents(input: GetEventsInput = {}) {
+export const getEvents = withAction("getEvents", async (addContext, input: GetEventsInput = {}) => {
   const user = await requireAuthUser();
+  addContext({ user_id: user.id });
 
   const parsed = getEventsSchema.safeParse(input);
   if (!parsed.success) return err(parsed.error.issues[0].message);
 
   const { search, sport, page = 1 } = parsed.data;
-  const offset = (page - 1) * PAGE_SIZE;
+  addContext({ search: search ?? null, sport: sport ?? null, page });
 
+  const offset = (page - 1) * PAGE_SIZE;
   const supabase = await createClient();
 
   let countQuery = supabase
     .from("events")
     .select("id", { count: "exact", head: true })
     .eq("user_id", user.id);
-
   if (search) countQuery = countQuery.ilike("name", `%${search}%`);
   if (sport) countQuery = countQuery.eq("sport_type", sport);
 
@@ -41,7 +43,6 @@ export async function getEvents(input: GetEventsInput = {}) {
     .eq("user_id", user.id)
     .order("starts_at", { ascending: true })
     .range(offset, offset + PAGE_SIZE - 1);
-
   if (search) dataQuery = dataQuery.ilike("name", `%${search}%`);
   if (sport) dataQuery = dataQuery.eq("sport_type", sport);
 
@@ -75,10 +76,12 @@ export async function getEvents(input: GetEventsInput = {}) {
     venue_count: venueCounts[e.id] ?? 0,
   }));
 
+  addContext({ result_count: summaries.length, total_count: total });
+
   return ok<GetEventsResult>({
     events: summaries,
     total,
     page,
     totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)),
   });
-}
+});
