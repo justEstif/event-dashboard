@@ -15,8 +15,10 @@
 import { createClient } from "@supabase/supabase-js";
 import { config } from "dotenv";
 import { resolve } from "path";
+import { existsSync } from "fs";
 
-config({ path: resolve(process.cwd(), ".env.local") });
+const envPath = resolve(process.cwd(), ".env.local");
+if (existsSync(envPath)) config({ path: envPath });
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -61,7 +63,8 @@ const EVENTS: Event[] = [
     name: "River City Derby",
     sport_type: "Soccer",
     starts_at: d(-30, 15),
-    description: "Annual crosstown rivalry between North FC and South United. Sold-out crowd expected.",
+    description:
+      "Annual crosstown rivalry between North FC and South United. Sold-out crowd expected.",
     venues: [
       { name: "Riverside Stadium", address: "1 River Rd, Springfield" },
       { name: "South Fan Zone", address: "42 South Ave, Springfield" },
@@ -72,9 +75,7 @@ const EVENTS: Event[] = [
     sport_type: "Basketball",
     starts_at: d(-14, 19, 30),
     description: "Four-team invitational with the region's top college squads.",
-    venues: [
-      { name: "Metro Arena", address: "200 Downtown Blvd, Capital City" },
-    ],
+    venues: [{ name: "Metro Arena", address: "200 Downtown Blvd, Capital City" }],
   },
   {
     name: "Open Grass Court",
@@ -93,9 +94,7 @@ const EVENTS: Event[] = [
     sport_type: "Baseball",
     starts_at: d(-1, 13),
     description: "First game of the spring season. Free entry for juniors.",
-    venues: [
-      { name: "Diamond Park", address: "7 Diamond Way, Northtown" },
-    ],
+    venues: [{ name: "Diamond Park", address: "7 Diamond Way, Northtown" }],
   },
   {
     name: "Beach Rally Cup",
@@ -113,9 +112,7 @@ const EVENTS: Event[] = [
     sport_type: "Rugby",
     starts_at: d(1, 11),
     description: "Fast-format rugby sevens with 8 club sides. Finals at 16:00.",
-    venues: [
-      { name: "Eastside Athletic Ground", address: "34 Eastside Rd, Eastville" },
-    ],
+    venues: [{ name: "Eastside Athletic Ground", address: "34 Eastside Rd, Eastville" }],
   },
 
   // ── Next 2 weeks ──────────────────────────────────────────────────────────
@@ -123,10 +120,9 @@ const EVENTS: Event[] = [
     name: "Metro Ice Clash",
     sport_type: "Hockey",
     starts_at: d(3, 18, 30),
-    description: "Cross-divisional ice hockey double-header. Doors open 60 minutes before puck drop.",
-    venues: [
-      { name: "Ice House Arena", address: "500 Cold St, Capital City" },
-    ],
+    description:
+      "Cross-divisional ice hockey double-header. Doors open 60 minutes before puck drop.",
+    venues: [{ name: "Ice House Arena", address: "500 Cold St, Capital City" }],
   },
   {
     name: "Pigskin Preseason Showdown",
@@ -153,16 +149,16 @@ const EVENTS: Event[] = [
     name: "Three-Point Shootout",
     sport_type: "Basketball",
     starts_at: d(9, 20),
-    description: "Skills competition — three-point contest, dunk contest, and half-court challenge.",
-    venues: [
-      { name: "Sports Centre Hall A", address: "22 Centre Ave, Riverside" },
-    ],
+    description:
+      "Skills competition — three-point contest, dunk contest, and half-court challenge.",
+    venues: [{ name: "Sports Centre Hall A", address: "22 Centre Ave, Riverside" }],
   },
   {
     name: "Grand Slam Qualifier",
     sport_type: "Tennis",
     starts_at: d(11, 10),
-    description: "Regional qualifier for national championship. Hard courts. Wildcard entries open.",
+    description:
+      "Regional qualifier for national championship. Hard courts. Wildcard entries open.",
     venues: [
       { name: "National Tennis Centre — Court 1", address: "1 Tennis Plaza, Capital City" },
       { name: "National Tennis Centre — Court 2", address: "1 Tennis Plaza, Capital City" },
@@ -175,24 +171,21 @@ const EVENTS: Event[] = [
     sport_type: "Baseball",
     starts_at: d(21, 14),
     description: "All-star format. Fan-voted rosters. Homerun derby the evening before.",
-    venues: [
-      { name: "Heritage Ballpark", address: "9 Heritage Dr, Oldtown" },
-    ],
+    venues: [{ name: "Heritage Ballpark", address: "9 Heritage Dr, Oldtown" }],
   },
   {
     name: "National Volleyball League Finals",
     sport_type: "Volleyball",
     starts_at: d(28, 17, 30),
     description: "Championship finals. Top two teams from the regular season. Live streamed.",
-    venues: [
-      { name: "Arena Central", address: "100 Main St, Capital City" },
-    ],
+    venues: [{ name: "Arena Central", address: "100 Main St, Capital City" }],
   },
   {
     name: "Summer Rugby Tens",
     sport_type: "Rugby",
     starts_at: d(35, 10),
-    description: "Ten-a-side summer format. 16 clubs, group stage and knockout. Barbecue and live music.",
+    description:
+      "Ten-a-side summer format. 16 clubs, group stage and knockout. Barbecue and live music.",
     venues: [
       { name: "County Grounds", address: "55 County Rd, Westshire" },
       { name: "County Grounds — Annex Pitch", address: "57 County Rd, Westshire" },
@@ -202,10 +195,9 @@ const EVENTS: Event[] = [
     name: "Season Opener — Ice League",
     sport_type: "Hockey",
     starts_at: d(42, 19),
-    description: "Curtain-raiser for the new ice hockey season. Reigning champions vs last year's runners-up.",
-    venues: [
-      { name: "Glacier Arena", address: "8 Frost Way, Northgate" },
-    ],
+    description:
+      "Curtain-raiser for the new ice hockey season. Reigning champions vs last year's runners-up.",
+    venues: [{ name: "Glacier Arena", address: "8 Frost Way, Northgate" }],
   },
 ];
 
@@ -242,10 +234,7 @@ async function main() {
 
   // 2. Clear existing demo data
   console.log("\n🗑   Clearing existing demo events…");
-  const { error: deleteError } = await admin
-    .from("events")
-    .delete()
-    .eq("user_id", userId);
+  const { error: deleteError } = await admin.from("events").delete().eq("user_id", userId);
   if (deleteError) throw deleteError;
   console.log("    ✓ Done");
 

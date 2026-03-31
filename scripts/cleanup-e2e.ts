@@ -15,8 +15,10 @@
 import { createClient } from "@supabase/supabase-js";
 import { config } from "dotenv";
 import { resolve } from "path";
+import { existsSync } from "fs";
 
-config({ path: resolve(process.cwd(), ".env.local") });
+const envPath = resolve(process.cwd(), ".env.local");
+if (existsSync(envPath)) config({ path: envPath });
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
