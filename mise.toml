@@ -1,2 +1,3 @@
 [tools]
 "npm:agent-browser" = "latest" # browser automation cli
+"npm:vercel" = "latest"         # vercel cli — deploy, link, env pull
