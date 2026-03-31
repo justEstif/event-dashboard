@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireAuthUser } from "@/lib/auth";
 import { ok, err, toErrorMessage } from "@/lib/result";
@@ -44,6 +45,8 @@ export async function updateEvent(id: string, input: EventInput) {
 
     if (venueError) return err(venueError.message);
 
+    revalidatePath("/dashboard");
+    revalidatePath(`/events/${id}`);
     return ok({ ...event, venues: insertedVenues } as EventWithVenues);
   } catch (e) {
     return err(toErrorMessage(e));

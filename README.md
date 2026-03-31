@@ -1,6 +1,6 @@
 # Fastbreak
 
-A sports event dashboard built with Next.js 15, Supabase, and Google OAuth.
+A sports event dashboard built with Next.js 16, Supabase, and Google OAuth.
 
 Create and manage your sporting events — search, filter by sport, and keep track of venues across Soccer, Basketball, Tennis, Baseball, Volleyball, Rugby, Hockey, and American Football.
 
@@ -21,7 +21,7 @@ A demo account is pre-seeded with 15 events across all sport types (past, presen
 
 | Layer | Choice |
 |---|---|
-| Framework | Next.js 15 App Router (React Server Components) |
+| Framework | Next.js 16 App Router (React Server Components) |
 | Database | Supabase (Postgres + Row Level Security) |
 | Auth | Supabase Auth — email/password + Google OAuth |
 | Styling | Tailwind CSS v4 + shadcn/ui |
@@ -120,11 +120,15 @@ npm run db:reset   # Reset local Supabase DB
 ```
 app/
   (protected)/        # Route group — shared nav layout
+    error.tsx         # Error boundary for all protected routes
     dashboard/        # Event list with search + filter
     events/
       new/            # Create event form
-      [id]/edit/      # Edit + delete event form
+      [id]/           # Event detail page
+        not-found.tsx # 404 for missing/unauthorised events
+        edit/         # Edit + delete event form
   auth/               # Login, sign-up, callback
+  global-error.tsx    # Root-level error boundary
 actions/
   auth.ts             # signIn, signUp, signOut
   events/             # getEvents, getEventById, createEvent, updateEvent, deleteEvent
