@@ -1,10 +1,9 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAuthUser } from "@/lib/auth";
-import { err, toErrorMessage } from "@/lib/result";
-import { eventSchema, type EventInput } from "@/lib/schemas/event";
+import { ok, err, toErrorMessage } from "@/lib/result";
+import { eventSchema, type EventInput, type EventWithVenues } from "@/lib/schemas/event";
 import { withAction } from "@/lib/withAction";
 
 export const createEvent = withAction("createEvent", async (addContext, input: EventInput) => {
@@ -33,14 +32,14 @@ export const createEvent = withAction("createEvent", async (addContext, input: E
 
     addContext({ event_id: event.id });
 
-    const { error: venueError } = await supabase
+    const { data: insertedVenues, error: venueError } = await supabase
       .from("venues")
       .insert(venues.map((v) => ({ ...v, event_id: event.id })))
       .select();
 
     if (venueError) return err(venueError.message);
 
-    redirect(`/events/${event.id}`);
+    return ok({ ...event, venues: insertedVenues } as EventWithVenues);
   } catch (e) {
     return err(toErrorMessage(e));
   }

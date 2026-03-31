@@ -18,8 +18,9 @@ const authFile = path.join(__dirname, ".auth/user.json");
  */
 setup("authenticate as demo user", async ({ page }) => {
   await page.goto("/auth/login");
+  await page.waitForLoadState("networkidle");
 
-  await page.getByRole("button", { name: "Sign in as demo user" }).click();
+  await page.getByRole("button", { name: "Sign in as demo user" }).click({ timeout: 15_000 });
 
   await expect(page).toHaveURL("/dashboard", { timeout: 15_000 });
 

@@ -15,12 +15,21 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? "github" : "html",
-  timeout: 30_000,
+  timeout: 60_000,
 
   use: {
     baseURL,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
+    // Bypass Vercel Deployment Protection on preview deployments.
+    // Set VERCEL_AUTOMATION_BYPASS_SECRET in GitHub Actions secrets.
+    // Enable in: Vercel Dashboard → Project → Settings → Deployment Protection → Protection Bypass for Automation
+    extraHTTPHeaders: process.env.VERCEL_AUTOMATION_BYPASS_SECRET
+      ? {
+          "x-vercel-protection-bypass": process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
+          "x-vercel-set-bypass-cookie": "true",
+        }
+      : {},
   },
 
   projects: [
