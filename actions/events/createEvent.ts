@@ -31,7 +31,7 @@ export async function createEvent(input: EventInput) {
 
     if (venueError) return err(venueError.message);
 
-    return ok({ ...event, venues: insertedVenues } as EventWithVenues);
+    redirect(`/events/${event.id}`);
   } catch (e) {
     return err(toErrorMessage(e));
   }

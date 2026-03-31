@@ -89,8 +89,6 @@ export function EventForm({ event }: EventFormProps) {
       }
 
       toast.success(isEditing ? "Event updated!" : "Event created!");
-      router.push(isEditing ? "/dashboard" : `/events/${result.data.id}`);
-      router.refresh();
     } catch (e) {
       unstable_rethrow(e);
       toast.error("Something went wrong. Please try again.");

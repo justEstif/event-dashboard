@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAuthUser } from "@/lib/auth";
-import { ok, err, toErrorMessage } from "@/lib/result";
+import { err, toErrorMessage } from "@/lib/result";
 import { eventSchema, type EventInput, type EventWithVenues } from "@/lib/schemas/event";
 
 export async function updateEvent(id: string, input: EventInput) {
@@ -46,8 +47,7 @@ export async function updateEvent(id: string, input: EventInput) {
     if (venueError) return err(venueError.message);
 
     revalidatePath("/dashboard");
-    revalidatePath(`/events/${id}`);
-    return ok({ ...event, venues: insertedVenues } as EventWithVenues);
+    redirect(`/events/${id}`);
   } catch (e) {
     return err(toErrorMessage(e));
   }
