@@ -47,3 +47,14 @@ next-env.d.ts
 .beans/
 .beans.yml
 skills-lock.json
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+tests/e2e/.auth/
+playwright-report/
+test-results/

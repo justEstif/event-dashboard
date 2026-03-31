@@ -2,6 +2,8 @@
 
 A sports event dashboard built with Next.js 16, Supabase, and Google OAuth.
 
+**Live:** https://event-dashboard-xi.vercel.app
+
 Create and manage your sporting events — search, filter by sport, and keep track of venues across Soccer, Basketball, Tennis, Baseball, Volleyball, Rugby, Hockey, and American Football.
 
 ---
@@ -10,23 +12,23 @@ Create and manage your sporting events — search, filter by sport, and keep tra
 
 A demo account is pre-seeded with 15 events across all sport types (past, present, and future):
 
-| | |
-|---|---|
-| **Email** | `demo@fastbreak.app` |
-| **Password** | `fastbreak2026!` |
+|              |                      |
+| ------------ | -------------------- |
+| **Email**    | `demo@fastbreak.app` |
+| **Password** | `fastbreak2026!`     |
 
 ---
 
 ## Tech stack
 
-| Layer | Choice |
-|---|---|
+| Layer     | Choice                                          |
+| --------- | ----------------------------------------------- |
 | Framework | Next.js 16 App Router (React Server Components) |
-| Database | Supabase (Postgres + Row Level Security) |
-| Auth | Supabase Auth — email/password + Google OAuth |
-| Styling | Tailwind CSS v4 + shadcn/ui |
-| Forms | react-hook-form + Zod |
-| Tests | Vitest |
+| Database  | Supabase (Postgres + Row Level Security)        |
+| Auth      | Supabase Auth — email/password + Google OAuth   |
+| Styling   | Tailwind CSS v4 + shadcn/ui                     |
+| Forms     | react-hook-form + Zod                           |
+| Tests     | Vitest                                          |
 
 ---
 

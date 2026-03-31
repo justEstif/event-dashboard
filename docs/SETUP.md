@@ -163,3 +163,57 @@ Env vars added in Vercel only take effect on the _next_ deploy. Trigger a fresh 
 
 **Google OAuth works locally but not on Vercel**
 Check that your Vercel URL is in Supabase's Redirect URLs list and that the Site URL is set correctly.
+
+---
+
+## 3. Vercel preview environment + E2E tests
+
+### 3.1 How the preview pipeline works
+
+Every push to the `staging` branch (or PR targeting `main`) triggers:
+
+1. A Vercel **Preview deployment** (not production)
+2. Playwright E2E tests run against that preview URL
+3. Results are posted back to the PR as a GitHub Actions status check
+
+### 3.2 Required GitHub secrets
+
+Add these in **GitHub → Settings → Secrets → Actions**:
+
+| Secret                          | Where to find it                           |
+| ------------------------------- | ------------------------------------------ |
+| `VERCEL_TOKEN`                  | vercel.com → Settings → Tokens             |
+| `VERCEL_ORG_ID`                 | `.vercel/project.json` after `vercel link` |
+| `VERCEL_PROJECT_ID`             | `.vercel/project.json` after `vercel link` |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase → Settings → API                  |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Settings → API                  |
+
+### 3.3 Tradeoff: production database for E2E tests
+
+> **This is a deliberate architectural choice, not an oversight.**
+
+E2E tests authenticate as `demo@fastbreak.app` and run against the **production Supabase project**. We considered a separate staging database but accepted the tradeoff because:
+
+- The demo account is a dedicated, non-real-user identity
+- Tests clean up after themselves (any events created are deleted in `afterAll`)
+- A second Supabase project adds operational overhead (two sets of migrations, two sets of env vars, seed scripts per environment) that isn't justified at this stage
+- It keeps the deployment model simple — one database, one source of truth
+
+**What this means in practice:**
+
+- Don't run E2E tests concurrently with a live demo (they share state)
+- Test event names are prefixed with `[E2E]` to make them easy to identify if cleanup fails
+- If a test run is interrupted, check for stale `[E2E]` events in the demo account
+
+### 3.4 Running E2E tests locally
+
+```bash
+# Ensure dev server is running
+npm run dev
+
+# Run all E2E tests
+npm run test:e2e
+
+# Run with interactive UI
+npm run test:e2e:ui
+```
