@@ -23,17 +23,8 @@ test.describe("Create event", () => {
     await page.getByRole("combobox", { name: "Sport" }).click();
     await page.getByRole("option", { name: "Basketball" }).click();
 
-    // Set date/time via the datetime-local input directly
-    await page.evaluate(() => {
-      const input = document.querySelector('input[type="datetime-local"]') as HTMLInputElement;
-      const setter = Object.getOwnPropertyDescriptor(
-        window.HTMLInputElement.prototype,
-        "value",
-      )!.set!;
-      setter.call(input, "2099-06-15T10:00");
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-    });
+    // Fill datetime-local — Playwright's fill() triggers React's onChange correctly
+    await page.locator('input[type="datetime-local"]').fill("2099-06-15T10:00");
 
     // Fill venue
     await page.getByLabel("Venue name").fill("E2E Test Arena");
