@@ -16,7 +16,8 @@
     "prepare": "husky",
     "format": "prettier --write .",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "e2e:cleanup": "tsx scripts/cleanup-e2e.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
