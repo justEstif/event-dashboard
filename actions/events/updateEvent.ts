@@ -1,10 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAuthUser } from "@/lib/auth";
-import { err, toErrorMessage } from "@/lib/result";
+import { ok, err, toErrorMessage } from "@/lib/result";
 import { eventSchema, type EventInput } from "@/lib/schemas/event";
 import { withAction } from "@/lib/withAction";
 
@@ -50,7 +49,8 @@ export const updateEvent = withAction(
       if (venueError) return err(venueError.message);
 
       revalidatePath("/dashboard");
-      redirect(`/events/${id}`);
+      revalidatePath(`/events/${id}`);
+      return ok({ id });
     } catch (e) {
       return err(toErrorMessage(e));
     }

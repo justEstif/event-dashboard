@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { unstable_rethrow } from "next/navigation";
+import { useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -28,7 +29,12 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-import { eventSchema, SPORT_TYPES, type EventInput, type EventWithVenues } from "@/lib/schemas/event";
+import {
+  eventSchema,
+  SPORT_TYPES,
+  type EventInput,
+  type EventWithVenues,
+} from "@/lib/schemas/event";
 import { createEvent } from "@/actions/events/createEvent";
 import { updateEvent } from "@/actions/events/updateEvent";
 
@@ -48,6 +54,7 @@ function toDatetimeLocal(iso: string): string {
 export function EventForm({ event }: EventFormProps) {
   const router = useRouter();
   const isEditing = Boolean(event);
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<EventInput>({
     resolver: zodResolver(eventSchema),
@@ -77,40 +84,39 @@ export function EventForm({ event }: EventFormProps) {
     name: "venues",
   });
 
-  async function onSubmit(data: EventInput) {
-    try {
-      const result = isEditing
-        ? await updateEvent(event!.id, data)
-        : await createEvent(data);
+  function onSubmit(data: EventInput) {
+    startTransition(async () => {
+      try {
+        const result = isEditing ? await updateEvent(event!.id, data) : await createEvent(data);
 
-      if (!result.success) {
-        toast.error(result.error);
-        return;
+        if (!result.success) {
+          toast.error(result.error);
+          return;
+        }
+
+        toast.success(isEditing ? "Event updated!" : "Event created!");
+        router.push(`/events/${result.data.id}`);
+      } catch (e) {
+        unstable_rethrow(e);
+        toast.error("Something went wrong. Please try again.");
+        console.error(e);
       }
-
-      toast.success(isEditing ? "Event updated!" : "Event created!");
-    } catch (e) {
-      unstable_rethrow(e);
-      toast.error("Something went wrong. Please try again.");
-      console.error(e);
-    }
+    });
   }
 
-  const isSubmitting = form.formState.isSubmitting;
+  const isSubmitting = form.formState.isSubmitting || isPending;
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
-
         {/* Event Details Card */}
         <Card>
           <CardHeader>
-            <CardTitle className="font-heading text-xl uppercase tracking-wide">
+            <CardTitle className="font-heading text-xl tracking-wide uppercase">
               Event Details
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-
             <FormField
               control={form.control}
               name="name"
@@ -125,7 +131,7 @@ export function EventForm({ event }: EventFormProps) {
               )}
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
                 name="sport_type"
@@ -171,11 +177,13 @@ export function EventForm({ event }: EventFormProps) {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description <span className="text-muted-foreground">(optional)</span></FormLabel>
+                  <FormLabel>
+                    Description <span className="text-muted-foreground">(optional)</span>
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Add context about the event — format, teams, entry requirements…"
-                      className="resize-none min-h-24"
+                      className="min-h-24 resize-none"
                       {...field}
                     />
                   </FormControl>
@@ -190,16 +198,14 @@ export function EventForm({ event }: EventFormProps) {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="font-heading text-xl uppercase tracking-wide">
-                Venues
-              </CardTitle>
+              <CardTitle className="font-heading text-xl tracking-wide uppercase">Venues</CardTitle>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => append({ name: "", address: "" })}
               >
-                <PlusIcon className="h-3.5 w-3.5 mr-1.5" />
+                <PlusIcon className="mr-1.5 h-3.5 w-3.5" />
                 Add venue
               </Button>
             </div>
@@ -210,15 +216,13 @@ export function EventForm({ event }: EventFormProps) {
                 {index > 0 && <Separator className="mb-4" />}
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Venue {index + 1}
-                    </p>
+                    <p className="text-muted-foreground text-sm font-medium">Venue {index + 1}</p>
                     {fields.length > 1 && (
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                        className="text-muted-foreground hover:text-destructive h-7 w-7"
                         onClick={() => remove(index)}
                       >
                         <TrashIcon className="h-3.5 w-3.5" />
@@ -226,7 +230,7 @@ export function EventForm({ event }: EventFormProps) {
                       </Button>
                     )}
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <FormField
                       control={form.control}
                       name={`venues.${index}.name`}
@@ -245,7 +249,9 @@ export function EventForm({ event }: EventFormProps) {
                       name={`venues.${index}.address`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Address <span className="text-muted-foreground">(optional)</span></FormLabel>
+                          <FormLabel>
+                            Address <span className="text-muted-foreground">(optional)</span>
+                          </FormLabel>
                           <FormControl>
                             <Input placeholder="e.g. 123 Main St, Springfield" {...field} />
                           </FormControl>
@@ -271,7 +277,7 @@ export function EventForm({ event }: EventFormProps) {
             Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting && <Loader2Icon className="h-4 w-4 mr-2 animate-spin" />}
+            {isSubmitting && <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />}
             {isEditing ? "Save changes" : "Create event"}
           </Button>
         </div>
