@@ -21,6 +21,15 @@ export default defineConfig({
     baseURL,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
+    // Bypass Vercel Deployment Protection on preview deployments.
+    // Set VERCEL_AUTOMATION_BYPASS_SECRET in GitHub Actions secrets.
+    // Enable in: Vercel Dashboard → Project → Settings → Deployment Protection → Protection Bypass for Automation
+    extraHTTPHeaders: process.env.VERCEL_AUTOMATION_BYPASS_SECRET
+      ? {
+          "x-vercel-protection-bypass": process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
+          "x-vercel-set-bypass-cookie": "true",
+        }
+      : {},
   },
 
   projects: [
