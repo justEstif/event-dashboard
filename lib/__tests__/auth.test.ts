@@ -33,6 +33,7 @@ function mockSupabase(user: User | null, error: Error | null = null) {
     auth: {
       getUser: vi.fn().mockResolvedValue({ data: { user }, error }),
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any);
 }
 

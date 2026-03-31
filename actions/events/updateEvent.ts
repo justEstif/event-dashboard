@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAuthUser } from "@/lib/auth";
 import { err, toErrorMessage } from "@/lib/result";
-import { eventSchema, type EventInput, type EventWithVenues } from "@/lib/schemas/event";
+import { eventSchema, type EventInput } from "@/lib/schemas/event";
 
 export async function updateEvent(id: string, input: EventInput) {
   if (!id) return err("Event ID is required");
@@ -19,7 +19,7 @@ export async function updateEvent(id: string, input: EventInput) {
   const supabase = await createClient();
 
   try {
-    const { data: event, error: eventError } = await supabase
+    const { error: eventError } = await supabase
       .from("events")
       .update(eventData)
       .eq("id", id)
@@ -32,17 +32,13 @@ export async function updateEvent(id: string, input: EventInput) {
       return err(eventError.message);
     }
 
-    const { error: deleteError } = await supabase
-      .from("venues")
-      .delete()
-      .eq("event_id", id);
+    const { error: deleteError } = await supabase.from("venues").delete().eq("event_id", id);
 
     if (deleteError) return err(deleteError.message);
 
-    const { data: insertedVenues, error: venueError } = await supabase
+    const { error: venueError } = await supabase
       .from("venues")
-      .insert(venues.map((v) => ({ name: v.name, address: v.address, event_id: id })))
-      .select();
+      .insert(venues.map((v) => ({ name: v.name, address: v.address, event_id: id })));
 
     if (venueError) return err(venueError.message);
 

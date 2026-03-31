@@ -3,8 +3,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAuthUser } from "@/lib/auth";
-import { ok, err, toErrorMessage } from "@/lib/result";
-import { eventSchema, type EventInput, type EventWithVenues } from "@/lib/schemas/event";
+import { err, toErrorMessage } from "@/lib/result";
+import { eventSchema, type EventInput } from "@/lib/schemas/event";
 
 export async function createEvent(input: EventInput) {
   const user = await requireAuthUser();
@@ -24,7 +24,7 @@ export async function createEvent(input: EventInput) {
 
     if (eventError) return err(eventError.message);
 
-    const { data: insertedVenues, error: venueError } = await supabase
+    const { error: venueError } = await supabase
       .from("venues")
       .insert(venues.map((v) => ({ ...v, event_id: event.id })))
       .select();

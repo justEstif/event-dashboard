@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
-import { err, type ActionResult } from "@/lib/result";
+import type { ActionResult } from "@/lib/result";
 
 /**
  * withAuth
