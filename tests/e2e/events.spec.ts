@@ -32,6 +32,19 @@ test.describe("Create event", () => {
 
     await page.getByRole("button", { name: "Create event" }).click();
 
+    // Log any visible error message to help debug failures
+    await page.waitForTimeout(2000);
+    const errorText = await page
+      .locator("[role=alert], .text-destructive")
+      .textContent()
+      .catch(() => null);
+    if (errorText) console.error("Form error:", errorText);
+    const pageContent = await page
+      .locator("form")
+      .textContent()
+      .catch(() => "");
+    console.log("Page after submit (first 300 chars):", pageContent?.slice(0, 300));
+
     // Should redirect to the detail page — not /events/new or /dashboard
     await expect(page).not.toHaveURL("/events/new", { timeout: 15_000 });
     await expect(page).not.toHaveURL("/dashboard");
